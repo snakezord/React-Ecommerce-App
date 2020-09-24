@@ -5,7 +5,7 @@ import { Switch, Route } from 'react-router-dom';
 import ShopPage from './pages/shop/shop.component'
 import Header from './components/header/header.component'
 import SignInAndUp from './pages/sign-in-and-up/sign-in-and-up.component'
-import { auth } from './firebase/firebase.utils'
+import { auth, createUserProfileDocument } from './firebase/firebase.utils'
 
 // Prop tunneling or drilling is a bad pattern
 // So use HOC withRouter()
@@ -21,10 +21,20 @@ class App extends React.Component {
   unsubscribeFromAuth = null 
 
   componentDidMount() {
-    this.unsubscribeFromAuth=  auth.onAuthStateChanged(user => {
-      this.setState({ currentUser: user })
+    this.unsubscribeFromAuth=  auth.onAuthStateChanged(async userAuth => {
+      if(userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
 
-      console.log(user)
+        userRef.onSnapshot(snapshot => {
+          this.setState({
+            currentUser: {
+              id: snapshot.id,
+              ...snapshot.data()
+            }
+          })
+          console.log(this.state)
+        })
+      }else this.setState( {currentUser: userAuth} )
     })
   }
 
