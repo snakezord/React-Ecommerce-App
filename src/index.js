@@ -5,16 +5,16 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 
 import { Provider } from 'react-redux';
-import store from './redux/store'
+import { PersistGate } from 'redux-persist/integration/react'
+import { store, persistor } from './redux/store'
 
 ReactDOM.render(
   <React.StrictMode>
-  {/* It gives our App that's sitting between
-   this Router component all of the functionality of Routing
-   this library provides */}
    <Provider store={store}>
-    <BrowserRouter>      
-      <App />
+    <BrowserRouter>
+      <PersistGate persistor={persistor} >
+        <App />
+      </PersistGate>
     </BrowserRouter>
    </Provider>
   </React.StrictMode>,
