@@ -15,9 +15,6 @@ import { setCurrentUser } from './redux/user/user.actions'
 import { selectCurrentUser } from "./redux/user/user.selectors";
 import { createStructuredSelector } from "reselect";
 
-// Prop tunneling or drilling is a bad pattern
-// So use HOC withRouter()
-
 class App extends React.Component {
 
   unsubscribeFromAuth = null 
@@ -30,12 +27,14 @@ class App extends React.Component {
         const userRef = await createUserProfileDocument(userAuth);
         
         userRef.onSnapshot(snapshot => {
-          setCurrentUser({       
+          setCurrentUser({
             id: snapshot.id,
             ...snapshot.data()
           })          
         })
-      }else setCurrentUser(userAuth)     
+      }else {
+        setCurrentUser(userAuth)
+      }
     })
   }
 
